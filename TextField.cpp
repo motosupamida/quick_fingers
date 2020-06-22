@@ -4,13 +4,10 @@ TextField::TextField(const sf::Font &font, const unsigned short& maxChars, const
 					 const sf::Color &colorBg, const sf::Text::Style &style) :
 	m_charLimit(maxChars * 16) //number of pixels for one char
 {
-	//m_font.loadFromFile("CenturyGothic.ttf");
 	setFont(font);
 	setFillColor(colorText);
 	setStyle(style);
 	background.setFillColor(colorBg);
-	//background.setSize(sf::Vector2f(100, 50));
-
 }
 
 void TextField::setPosition(float x, float y)
