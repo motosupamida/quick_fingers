@@ -9,5 +9,6 @@ private:
 
 public:
 	static std::wstring getRandomText(const unsigned short stringSize = 30u);
+	static std::wstring getTextFromFile();
 };
 

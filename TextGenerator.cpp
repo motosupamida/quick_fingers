@@ -7,8 +7,16 @@ std::wstring TextGenerator::getRandomText(const unsigned short stringSize)
     std::wstring result = L"";
     for (unsigned short i = 0; i < stringSize; i++)
     {
-        //std::cout << (160 + rand() % 85) << "  ";
         result += (160 + rand() % 85);
     }
-    return result;
+    //return result;
+    return L"Тестовый текст";
+}
+
+std::wstring TextGenerator::getTextFromFile()
+{
+    std::wstring result = L"";
+
+    //return result;
+    return L"Тестовый текст";
 }
