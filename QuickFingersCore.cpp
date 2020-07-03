@@ -17,11 +17,11 @@ void QuickFingersCore::core()
     float elapsedTime = 0;
     sf::Font font;
     font.loadFromFile("CenturyGothic.ttf");
-    TextField taskText(font, sf::Text::Style::Bold, sf::Color(135, 206, 250));
+    //TextField taskText(font, sf::Text::Style::Bold, sf::Color(135, 206, 250));
     TextField enteredText(font, sf::Text::Style::Italic, sf::Color(238, 130, 238));
     //taskText.setString(TextGenerator::getRandomText());
-    taskText.setPosition(10.0f, 10.0f);
-    enteredText.setPosition(10.0f, taskText.getGlobalBounds().height + 90.0f + taskText.getCharacterSize());
+    //taskText.setPosition(10.0f, 10.0f);
+    enteredText.setPosition(10.0f,  90.0f);
 
     while (m_window->isOpen())
     {

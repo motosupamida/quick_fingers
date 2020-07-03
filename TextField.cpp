@@ -30,18 +30,18 @@ void TextField::render(sf::RenderTarget& target) const
 	}
 }
 
-void TextField::setPosition(float x, float y)
+void TextField::setPosition(float x, float y, unsigned short i)
 {
-	for (unsigned short i = 0; i <= activeStringNumber; i++)
+	for (; i <= activeStringNumber; i++)
 	{
 		textVector[i].setPosition(x, y + (m_charSize * i));
 	}
 }
 
-void TextField::setWString(std::wstring wString)
-{
-
-}
+//void TextField::setWString(std::wstring wString)
+//{
+//
+//}
 
 void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHight)
 {
@@ -90,17 +90,15 @@ void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, 
 					}
 				}
 				textVector[activeStringNumber].setString(editableWString);
-				textVector[activeStringNumber].setMWString(editableWString);
 				textVector.push_back(TextString(m_font, m_style, m_colorText, m_charSize, m_colorBg));
 				activeStringNumber++;
 				textVector[activeStringNumber].setString(nextLineWString);
-				textVector[activeStringNumber].setMWString(nextLineWString);
 				textVector[activeStringNumber].handleInput(e);
 				m_wString += e.text.unicode;
 			}
-			//this->setPosition(this->getGlobalBounds().left, this->getGlobalBounds().top);
-			
+			this->setPosition(textVector[0].getPosition().x, textVector[0].getPosition().y, activeStringNumber);
 		}
 	}
 }
 
+ 

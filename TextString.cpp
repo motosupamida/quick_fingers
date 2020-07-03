@@ -10,11 +10,6 @@ TextString::TextString(const sf::Font& font, const sf::Text::Style& style, const
 	background.setFillColor(colorBg);
 }
 
-void TextString::setMWString(std::wstring wString)
-{
-	m_wString = wString;
-}
-
 void TextString::setPosition(float x, float y)
 {
 	sf::Transformable::setPosition(x, y);
@@ -24,15 +19,15 @@ void TextString::setPosition(float x, float y)
 
 void TextString::handleInput(const sf::Event& e)
 {
+	std::wstring str = static_cast<std::wstring>(getString());
 	if (e.text.unicode == 8)    // Delete key
 	{
-		m_wString = m_wString.substr(0, m_wString.size() - 1);
+		setString(str.substr(0, (str.length() - 1)));
 	}
 	else
 	{
-		m_wString += e.text.unicode;
+		setString(str + static_cast<wchar_t>(e.text.unicode));
 	}
-	setString(m_wString);
 	background.setSize(sf::Vector2f(this->getGlobalBounds().width + getCharacterSize() / 7, this->getCharacterSize()));
 	// add one-seventh of the font size to the background width size to fit the italiñ style
 }

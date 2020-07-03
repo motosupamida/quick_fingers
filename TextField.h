@@ -22,8 +22,8 @@ public:
 			  const unsigned short& charSize = 36, const sf::Color& colorBg = sf::Color(35, 35, 35));
 	unsigned short getCharacterSize();
 	std::wstring getWString();
-	void setPosition(float x, float y);
+	void setPosition(float x, float y, unsigned short i = 0);
 	void handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHigth);
 	void render(sf::RenderTarget& target)const;
-	void setWString(std::wstring wString);
+	//void setWString(std::wstring wString);
 };	
