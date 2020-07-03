@@ -152,12 +152,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="QuickFingersCore.cpp" />
     <ClCompile Include="TextField.cpp" />
     <ClCompile Include="TextGenerator.cpp" />
+    <ClCompile Include="TextString.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="QuickFingersCore.h" />
     <ClInclude Include="TextField.h" />
     <ClInclude Include="TextGenerator.h" />
+    <ClInclude Include="TextString.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

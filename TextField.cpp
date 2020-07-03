@@ -1,40 +1,106 @@
 #include "TextField.h"
 
 TextField::TextField(const sf::Font& font, const sf::Text::Style& style, const sf::Color& colorText,
-					 const unsigned short& charSize, const unsigned short& charLimit, const sf::Color& colorBg) :
-	m_charLimit(charLimit)
+	const unsigned short& charSize, const sf::Color& colorBg) :
+	m_font(font),
+	m_style(style),
+	m_colorText(colorText),
+	m_charSize(charSize),
+	m_colorBg(colorBg)
 {
-	setFont(font);
-	setFillColor(colorText);
-	setStyle(style);
-	this->setCharacterSize(charSize);
-	background.setFillColor(colorBg);
+	textVector.push_back(TextString(m_font, m_style, m_colorText, m_charSize, m_colorBg));
+	activeStringNumber = 0;
 }
 
-void TextField::setPosition(float x, float y)
+unsigned short TextField::getCharacterSize()
 {
-	sf::Transformable::setPosition(x, y);
-	background.setPosition(x, y + this->getCharacterSize() / 7); 
-	//move down the background one-seventh of the font size so that it matches the bottom of letters such as 'y' or 'p' or 'q'
+	return m_charSize;
 }
 
-void TextField::handleInput(const sf::Event &e)
+std::wstring TextField::getWString()
 {
-	if (e.text.unicode == 8)    // Delete key
-	{
-		m_string = m_string.substr(0, m_string.size() - 1);
-	}
-	else if (m_string.size() < m_charLimit) 
-	{
-		m_string += e.text.unicode;
-	}
-	setString(m_string);
-	background.setSize(sf::Vector2f(this->getGlobalBounds().width + getCharacterSize() / 7, this->getCharacterSize()));
-	// add one-seventh of the font size to the background width size to fit the italiñ style
+	return m_wString;
 }
 
 void TextField::render(sf::RenderTarget& target) const
 {
-	target.draw(background);
-	target.draw(*this);
+	for (unsigned short i = 0; i <= activeStringNumber; i++)
+	{
+		textVector[i].render(target);
+	}
 }
+
+void TextField::setPosition(float x, float y)
+{
+	for (unsigned short i = 0; i <= activeStringNumber; i++)
+	{
+		textVector[i].setPosition(x, y + (m_charSize * i));
+	}
+}
+
+void TextField::setWString(std::wstring wString)
+{
+
+}
+
+void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHight)
+{
+	if (e.text.unicode == 8)    // Delete key
+	{
+		if (textVector[activeStringNumber].getString().getSize() > 0)
+		{
+			textVector[activeStringNumber].handleInput(e);
+			m_wString = m_wString.substr(0, m_wString.size() - 1);
+		}
+		else if (activeStringNumber > 0)
+		{
+			textVector.pop_back();
+			activeStringNumber--;
+			m_wString = m_wString.substr(0, m_wString.size() - 1);
+			textVector[activeStringNumber].handleInput(e);
+		}
+	}
+	else
+	{
+		if (textVector[activeStringNumber].getGlobalBounds().width + 10.f + m_charSize < winWidth)
+		{
+			textVector[activeStringNumber].handleInput(e);
+			m_wString += e.text.unicode;
+		}
+		else
+		{
+			std::wstring editableWString = textVector[activeStringNumber].getString();
+			std::wstring nextLineWString = L"";
+			if (e.text.unicode == L' ')
+			{
+				m_wString += e.text.unicode;
+				textVector[activeStringNumber].handleInput(e);
+				textVector.push_back(TextString(m_font, m_style, m_colorText, m_charSize, m_colorBg));
+				activeStringNumber++;
+			}
+			else
+			{
+				for (unsigned short i = editableWString.length(); i > 0; --i)
+				{
+					if (editableWString[i] == ' ')
+					{
+						nextLineWString.append(editableWString, i + 1, editableWString.length());
+						editableWString.erase(i+1, editableWString.length());
+						break;
+					}
+				}
+				textVector[activeStringNumber].setString(editableWString);
+				textVector[activeStringNumber].setMWString(editableWString);
+				textVector.push_back(TextString(m_font, m_style, m_colorText, m_charSize, m_colorBg));
+				activeStringNumber++;
+				textVector[activeStringNumber].setString(nextLineWString);
+				textVector[activeStringNumber].setMWString(nextLineWString);
+				textVector[activeStringNumber].handleInput(e);
+				m_wString += e.text.unicode;
+			}
+			//this->setPosition(this->getGlobalBounds().left, this->getGlobalBounds().top);
+			
+		}
+	}
+}
+

@@ -1,6 +1,5 @@
 #include "TextGenerator.h"
 
-
 std::wstring TextGenerator::getRandomText(const unsigned short stringSize)
 {
     srand(time(NULL));

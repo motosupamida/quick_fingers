@@ -1,19 +1,29 @@
 #pragma once
 
 #include <iostream>
-
 #include <sfml/graphics.hpp>
+#include "TextString.h"
 
-class TextField : public sf::Text
+class TextField : public sf::RectangleShape
 {
 private:
-	unsigned short m_charLimit;
-	std::wstring m_string;
-	sf::RectangleShape background;
+	std::wstring m_wString;
+	std::vector<TextString> textVector;
+	sf::RectangleShape m_background;
+	sf::Font m_font;
+	sf::Text::Style m_style;
+	sf::Color m_colorText;
+	sf::Color m_colorBg;
+	unsigned short m_charSize;
+	unsigned short activeStringNumber;
+	
 public:
 	TextField(const sf::Font& font, const sf::Text::Style& style = sf::Text::Style::Regular, const sf::Color& colorText = sf::Color::White,
-			  const unsigned short& charSize = 36, const unsigned short& charLimit = 32u, const sf::Color& colorBg = sf::Color(35, 35, 35));
+			  const unsigned short& charSize = 36, const sf::Color& colorBg = sf::Color(35, 35, 35));
+	unsigned short getCharacterSize();
+	std::wstring getWString();
 	void setPosition(float x, float y);
-	void handleInput(const sf::Event &e);
+	void handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHigth);
 	void render(sf::RenderTarget& target)const;
+	void setWString(std::wstring wString);
 };	
