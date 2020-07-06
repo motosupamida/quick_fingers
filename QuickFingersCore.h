@@ -9,6 +9,7 @@ class QuickFingersCore
 {
 private:
 	sf::RenderWindow* m_window;
+	bool challengeDone(TextField& taskText, TextField& enteredText);
 public:
 	QuickFingersCore(unsigned short windowWidth = 800, unsigned short windowHight = 800);
 	~QuickFingersCore();
