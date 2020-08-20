@@ -9,7 +9,7 @@ class TextGenerator
 private:
 
 public:
-	static std::wstring getRandomText(const unsigned short stringSize = 30u);
+	static std::wstring getRandomText(const unsigned short = 0, const unsigned short stringSize = 10u, const unsigned short spaceRate = 0u);
 	static std::wstring getTextFromFile();
 };
 

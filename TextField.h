@@ -2,29 +2,29 @@
 
 #include <iostream>
 #include <sfml/graphics.hpp>
-#include "TextString.h"
+#include "StringField.h"
+#include "TextParameter.h"
 
 class TextField : public sf::RectangleShape
 {
 private:
+	TextParameter m_textParameter;
 	std::wstring m_wString;
-	std::vector<TextString> m_textVector;
-	sf::RectangleShape m_background;
-	sf::Font m_font;
-	sf::Text::Style m_style;
-	sf::Color m_colorText;
-	sf::Color m_colorBg;
-	unsigned short m_charSize;
+	std::vector<StringField> m_vectorOfStrings;
 	unsigned short m_activeStringNumber;
+	float m_x;
+	float m_y;
+	void vectorWStringAppend(std::wstring string);
 public:
-	TextField(const sf::Font& font, const sf::Text::Style& style = sf::Text::Style::Regular, const sf::Color& colorText = sf::Color::White,
-			  const unsigned short& charSize = 36, const sf::Color& colorBg = sf::Color(35, 35, 35));
+	TextField(TextParameter textParameter);
 	unsigned short getCharacterSize();
-	unsigned short getHeight();
-	unsigned short getWidth();
+	float getHeight();
+	float getWidth();
+	float getX();
+	float getY();
 	std::wstring getWString();
-	void setPosition(float x, float y, unsigned short i = 0);
+	void setPosition(float x, float y);
 	void handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHigth);
-	void render(sf::RenderTarget& target)const;
+	void render(sf::RenderTarget& target);
 	void setWString(const std::wstring& wString, const unsigned short& winWidth, const unsigned short& winHight);
 };	
