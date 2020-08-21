@@ -2,6 +2,7 @@
 
 std::wstring TextGenerator::getRandomText(const unsigned short language, const unsigned short stringSize, const unsigned short spaceRate)
 {
+    /*
     wchar_t alphabet[5][33] =
     { {L'a', L'b', L'c', L'd', L'e', L'f', L'g', L'h', L'i', L'j', L'k', L'l', L'm', L'n', L'o', L'p', L'q', L'r', L's', L't', L'u', L'v', L'w', L'x', L'y', L'z' },
     {L'A', },
@@ -16,8 +17,9 @@ std::wstring TextGenerator::getRandomText(const unsigned short language, const u
             if ((spaceRate == (rand() % spaceRate)) && (i < stringSize + 1))
                 result += L" ";
     }
-    return result;
-    //return L"Большой тестовый текст...";
+    return result;*/
+    //return L"Тестовый текст.";
+    return L"один два три четыре пять шесть семь восемь девять десять одиннадцать двенадцать тринадцать четырнадцать";
 }
 
 std::wstring TextGenerator::getTextFromFile()

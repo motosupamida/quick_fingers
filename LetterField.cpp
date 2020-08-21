@@ -1,13 +1,14 @@
-#include "LetterField.h"
+﻿#include "LetterField.h"
+#define DEFAULT_OFFSET (getCharacterSize() / 7)
+//shift the background by 1/7 so that the letters "p", "q", etc., do not go over the edge
 
-LetterField::LetterField(const TextParameter textParameter, const wchar_t letter):
-m_colorMistakeBackground(textParameter.colorMistakeBackground),
-m_letter(letter)
+LetterField::LetterField(const TextParameter textParameter, const wchar_t letter)
+	: m_colorMistakeBackground(textParameter.colorMistakeBackground),
+	m_letter(letter),
+	sf::Text { "", *textParameter.font, textParameter.charSize }
 {
-	setFont(textParameter.font);
 	setFillColor(textParameter.colorText);
 	setStyle(textParameter.style);
-	setCharacterSize(textParameter.charSize);
 	setString(m_letter);
 	m_background.setFillColor(textParameter.colorCorrectBackground);
 }
@@ -15,7 +16,9 @@ m_letter(letter)
 void LetterField::setPosition(float x, float y)
 {
 	this->sf::Transformable::setPosition(x, y);
-	m_background.setPosition(x, y + this->getCharacterSize() / 7);
+	m_background.setSize(sf::Vector2f(this->getGlobalBounds().width + DEFAULT_OFFSET, this->getCharacterSize()));
+	m_background.setPosition(x, y + DEFAULT_OFFSET);
+
 }
 
 void LetterField::render(sf::RenderTarget& target)

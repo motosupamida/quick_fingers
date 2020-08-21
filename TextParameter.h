@@ -4,7 +4,7 @@
 
 struct TextParameter
 {
-	sf::Font font;
+	std::shared_ptr<sf::Font> font;
 	sf::Text::Style style = sf::Text::Style::Regular;
 	sf::Color colorText = sf::Color::White;
 	unsigned short charSize = 36u;

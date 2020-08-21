@@ -1,4 +1,23 @@
-#include "QuickFingersCore.h"
+﻿#include "QuickFingersCore.h"
+
+QuickFingersCore::QuickFingersCore(unsigned short windowWidth, unsigned short windowHight) :
+    m_window{ new sf::RenderWindow({ windowWidth, windowHight }, "QuickFingers", sf::Style::Close) },
+    m_deltaTime { 0.f },
+    m_elapsedTime { 0.f }
+{
+    m_window->setFramerateLimit(120);
+
+    m_supportedFonts["CENTURY_GOTHIC"] = std::make_shared<sf::Font>();
+    m_supportedFonts["CENTURY_GOTHIC"]->loadFromFile("CenturyGothic.ttf");
+
+    m_textParameter.font = m_supportedFonts["CENTURY_GOTHIC"];
+    m_textParameter.style = sf::Text::Style::Italic;
+}
+
+QuickFingersCore::~QuickFingersCore()
+{
+    delete m_window;
+}
 
 bool QuickFingersCore::mistakeCheck(TextField& taskText, TextField& enteredText)
 {
@@ -26,27 +45,10 @@ bool QuickFingersCore::challengeDone(TextField& taskText, TextField& enteredText
     return false;
 }
 
-QuickFingersCore::QuickFingersCore(unsigned short windowWidth, unsigned short windowHight) :
-    m_window{ new sf::RenderWindow({ windowWidth, windowHight }, "QuickFingers", sf::Style::Close) }
-{
-}
-
-QuickFingersCore::~QuickFingersCore()
-{
-    delete m_window;
-}
-
 void QuickFingersCore::core()
 {
-    m_window->setFramerateLimit(120);
-    sf::Clock timer;
-    float deltaTime;
-    float elapsedTime = 0;
     bool stop = false;
-    sf::Font font;
     std::wstring challengeMessageString = L"Done! Elapsed time is: ";
-    font.loadFromFile("CenturyGothic.ttf");
-    m_textParameter = {font, sf::Text::Style::Italic};
     TextField taskText(m_textParameter);
     //TextField enteredText(font, sf::Text::Style::Italic, sf::Color(238, 130, 238), taskText.getCharacterSize());
     //TextField challengeMessageText(font, sf::Text::Style::Regular, sf::Color(0, 100, 0), enteredText.getCharacterSize(), sf::Color::White);
@@ -57,8 +59,8 @@ void QuickFingersCore::core()
     //timerText.setPosition(timerText.getCharacterSize(), timerText.getCharacterSize());
     while (m_window->isOpen())
     {
-        deltaTime = timer.restart().asSeconds();
-        elapsedTime += deltaTime;
+        m_deltaTime = m_timer.restart().asSeconds();
+        m_elapsedTime += m_deltaTime;
         //timerText.setWString(std::to_wstring(elapsedTime), m_window->getSize().x, m_window->getSize().y);
         for (sf::Event event; m_window->pollEvent(event);)
             if (event.type == sf::Event::Closed)

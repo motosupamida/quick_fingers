@@ -64,14 +64,12 @@ void TextField::render(sf::RenderTarget& target)
 	}
 	m_vectorOfStrings.pop_back();
 	m_vectorOfStrings.push_back(StringField(m_textParameter));
-	m_activeStringNumber = 0;
 	for (unsigned short i = 0; i <= wString.length(); i++)
 	{
 		wchar_t ch = wString[i];
 		if (m_vectorOfStrings[m_activeStringNumber].getWidth() + 2 * m_textParameter.charSize < winWidth)
 		{
 			m_vectorOfStrings[m_activeStringNumber].charAppend(ch);
-			//m_vectorOfStrings[m_activeStringNumber].correctBackground();
 			m_wString += ch;
 		}
 		else
@@ -81,7 +79,6 @@ void TextField::render(sf::RenderTarget& target)
 			if (ch == L' ')
 			{
 				m_vectorOfStrings[m_activeStringNumber].charAppend(ch);
-				//m_vectorOfStrings[m_activeStringNumber].correctBackground();
 				m_wString += ch;
 				m_vectorOfStrings.push_back(StringField(m_textParameter));
 				m_activeStringNumber++;
@@ -98,12 +95,10 @@ void TextField::render(sf::RenderTarget& target)
 					}
 				}
 				vectorWStringAppend(editableWString);
-				//m_vectorOfStrings[m_activeStringNumber].correctBackground();
 				m_vectorOfStrings.push_back(StringField(m_textParameter));
 				m_activeStringNumber++;
 				vectorWStringAppend(nextLineWString);
 				m_vectorOfStrings[m_activeStringNumber].charAppend(ch);
-				//m_vectorOfStrings[m_activeStringNumber].correctBackground();
 				m_wString += ch;
 			}
 			this->setPosition(m_vectorOfStrings[0].getX(), m_vectorOfStrings[0].getY());
