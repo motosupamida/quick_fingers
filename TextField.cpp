@@ -1,4 +1,5 @@
 #include "TextField.h"
+#define DEFAULT_INTERLIGNE 1.3
 
 void TextField::vectorWStringAppend(std::wstring string)
 {
@@ -67,7 +68,7 @@ void TextField::render(sf::RenderTarget& target)
 	for (unsigned short i = 0; i <= wString.length(); i++)
 	{
 		wchar_t ch = wString[i];
-		if (m_vectorOfStrings[m_activeStringNumber].getWidth() + 2 * m_textParameter.charSize < winWidth)
+		if (m_vectorOfStrings[m_activeStringNumber].getWidth() + m_textParameter.charSize * 2< winWidth)
 		{
 			m_vectorOfStrings[m_activeStringNumber].charAppend(ch);
 			m_wString += ch;
@@ -87,21 +88,19 @@ void TextField::render(sf::RenderTarget& target)
 			{
 				for (unsigned short i = editableWString.length(); i > 0; --i)
 				{
-					if (editableWString[i] == ' ')
+					if (editableWString[i-1] == L' ')
 					{
-						nextLineWString.append(editableWString, i + 1, editableWString.length());
-						editableWString.erase(i + 1, editableWString.length());
+						nextLineWString.append(editableWString, i, editableWString.length());
 						break;
 					}
+					m_vectorOfStrings[m_activeStringNumber].charDelete();
 				}
-				vectorWStringAppend(editableWString);
 				m_vectorOfStrings.push_back(StringField(m_textParameter));
 				m_activeStringNumber++;
 				vectorWStringAppend(nextLineWString);
 				m_vectorOfStrings[m_activeStringNumber].charAppend(ch);
 				m_wString += ch;
 			}
-			this->setPosition(m_vectorOfStrings[0].getX(), m_vectorOfStrings[0].getY());
 		}
 	}
 }
@@ -110,7 +109,7 @@ void TextField::setPosition(float x, float y)
 {
 	for (unsigned short i = 0; i <= m_activeStringNumber; i++)
 	{
-		m_vectorOfStrings[i].setPosition(x, y + (m_textParameter.charSize * i));
+		m_vectorOfStrings[i].setPosition(x, y + i * (m_textParameter.charSize * DEFAULT_INTERLIGNE));
 	}
 }
 

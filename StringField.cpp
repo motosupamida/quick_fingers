@@ -1,4 +1,5 @@
 #include "StringField.h"
+#define DEFAULT_TRACKING 1.5
 
 StringField::StringField(const TextParameter textParameter) :
 	m_textParameter (textParameter),
@@ -14,9 +15,8 @@ void StringField::charAppend(wchar_t& ch)
 	{
 		m_wstring += ch;
 		m_vectorOfLetters.push_back(LetterField(m_textParameter, ch));
-		m_activeLetterNumber++;
 		this->setPosition(m_x, m_y, m_activeLetterNumber);
-
+		m_activeLetterNumber++;
 	}
 }
 
@@ -57,7 +57,7 @@ void StringField::setPosition(float x, float y, unsigned short i)
 	for (; i < m_vectorOfLetters.size(); i++)
 	{
 		if (!i)
-			m_vectorOfLetters[i].setPosition(x, y);
+			m_vectorOfLetters[i].setPosition(m_x, m_y);
 		else
 			m_vectorOfLetters[i].setPosition(m_vectorOfLetters[i-1].getGlobalBounds().left + m_vectorOfLetters[i-1].getGlobalBounds().width, y);
 	}
@@ -65,7 +65,7 @@ void StringField::setPosition(float x, float y, unsigned short i)
 
 void StringField::render(sf::RenderTarget& target)
 {
-	for (unsigned short i = 0; i < m_activeLetterNumber; i++)
+	for (unsigned short i = 0; i <= m_activeLetterNumber; i++)
 	{
 		m_vectorOfLetters[i].render(target);
 	}

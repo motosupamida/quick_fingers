@@ -19,7 +19,7 @@ std::wstring TextGenerator::getRandomText(const unsigned short language, const u
     }
     return result;*/
     //return L"Тестовый текст.";
-    return L"один два три четыре пять шесть семь восемь девять десять одиннадцать двенадцать тринадцать четырнадцать";
+    return L"один два три четыре пять шесть семь восемь девять десять одинадцать двенадцать тринадцать четырнадцать пятнадцать шестнадцать семнадцать восемнадцать двадцать";
 }
 
 std::wstring TextGenerator::getTextFromFile()

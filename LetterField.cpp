@@ -10,15 +10,19 @@ LetterField::LetterField(const TextParameter textParameter, const wchar_t letter
 	setFillColor(textParameter.colorText);
 	setStyle(textParameter.style);
 	setString(m_letter);
+	if (m_letter == L' ')
+		setCharacterSize(textParameter.charSize * 2); //increase the size of the spaces to improve the readability of the text
 	m_background.setFillColor(textParameter.colorCorrectBackground);
 }
 
 void LetterField::setPosition(float x, float y)
 {
 	this->sf::Transformable::setPosition(x, y);
-	m_background.setSize(sf::Vector2f(this->getGlobalBounds().width + DEFAULT_OFFSET, this->getCharacterSize()));
+	if (m_letter != L' ')
+		m_background.setSize(sf::Vector2f(this->getGlobalBounds().width + DEFAULT_OFFSET, this->getCharacterSize()));
+	else //change the display of the space
+		m_background.setSize(sf::Vector2f(this->getGlobalBounds().width + DEFAULT_OFFSET / 2, this->getCharacterSize() / 2.8));
 	m_background.setPosition(x, y + DEFAULT_OFFSET);
-
 }
 
 void LetterField::render(sf::RenderTarget& target)

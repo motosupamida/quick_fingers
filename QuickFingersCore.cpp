@@ -6,12 +6,10 @@ QuickFingersCore::QuickFingersCore(unsigned short windowWidth, unsigned short wi
     m_elapsedTime { 0.f }
 {
     m_window->setFramerateLimit(120);
-
     m_supportedFonts["CENTURY_GOTHIC"] = std::make_shared<sf::Font>();
     m_supportedFonts["CENTURY_GOTHIC"]->loadFromFile("CenturyGothic.ttf");
-
     m_textParameter.font = m_supportedFonts["CENTURY_GOTHIC"];
-    m_textParameter.style = sf::Text::Style::Italic;
+    m_textParameter.style = sf::Text::Style::Regular;
 }
 
 QuickFingersCore::~QuickFingersCore()
@@ -50,12 +48,10 @@ void QuickFingersCore::core()
     bool stop = false;
     std::wstring challengeMessageString = L"Done! Elapsed time is: ";
     TextField taskText(m_textParameter);
-    //TextField enteredText(font, sf::Text::Style::Italic, sf::Color(238, 130, 238), taskText.getCharacterSize());
-    //TextField challengeMessageText(font, sf::Text::Style::Regular, sf::Color(0, 100, 0), enteredText.getCharacterSize(), sf::Color::White);
+    //TextField MessageText(font, sf::Text::Style::Regular, sf::Color(0, 100, 0), enteredText.getCharacterSize(), sf::Color::White);
     //TextField timerText(font, sf::Text::Style::Regular, sf::Color(0, 130, 0), enteredText.getCharacterSize() / 2);
     taskText.setWString(TextGenerator::getRandomText(), m_window->getSize().x, m_window->getSize().y);
-    taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize() * 1.5f);
-    //enteredText.setPosition(enteredText.getCharacterSize(), taskText.getHeight() + taskText.getCharacterSize());
+    taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize());
     //timerText.setPosition(timerText.getCharacterSize(), timerText.getCharacterSize());
     while (m_window->isOpen())
     {
@@ -71,19 +67,18 @@ void QuickFingersCore::core()
             {
                 //if ((event.type == sf::Event::TextEntered) && !stop)
                   //  taskText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
-                    //enteredText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
             }
         m_window->clear();
         taskText.render(*m_window);
-        /*enteredText.render(*m_window);
-        challengeMessageText.render(*m_window);
+        /*
+        MessageText.render(*m_window);
         if (!stop)
             timerText.render(*m_window);
         if (challengeDone(taskText, enteredText) && !stop)
         {
-            challengeMessageString += std::to_wstring(elapsedTime);
-            challengeMessageText.setWString(challengeMessageString, m_window->getSize().x, m_window->getSize().y);
-            challengeMessageText.setPosition(m_window->getSize().x / 2 - challengeMessageText.getWidth() / 2, challengeMessageText.getCharacterSize());
+            MessageString += std::to_wstring(elapsedTime);
+            MessageText.setWString(challengeMessageString, m_window->getSize().x, m_window->getSize().y);
+            MessageText.setPosition(m_window->getSize().x / 2 - challengeMessageText.getWidth() / 2, challengeMessageText.getCharacterSize());
             stop = true;
         }*/
         m_window->display();
