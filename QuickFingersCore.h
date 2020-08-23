@@ -10,6 +10,10 @@
 
 class QuickFingersCore
 {
+public:
+	QuickFingersCore(unsigned short windowWidth = 800, unsigned short windowHight = 800);
+	~QuickFingersCore();
+	void core();
 private:
 	TextParameter m_textParameter;
 	sf::RenderWindow* m_window;
@@ -19,9 +23,6 @@ private:
 	std::map<std::string, std::shared_ptr<sf::Font>> m_supportedFonts;
 	bool challengeDone(TextField& taskText, TextField& enteredText);
 	bool mistakeCheck(TextField& taskText, TextField& enteredText);
-public:
-	QuickFingersCore(unsigned short windowWidth = 800, unsigned short windowHight = 800);
-	~QuickFingersCore();
-	void core();
+
 };
 

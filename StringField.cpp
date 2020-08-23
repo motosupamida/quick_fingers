@@ -9,7 +9,7 @@ StringField::StringField(const TextParameter textParameter) :
 {
 }
 
-void StringField::charAppend(wchar_t& ch)
+void StringField::charAppend(const wchar_t& ch)
 {
 	if ((ch != L'\0') && (ch != L'\n'))
 	{
@@ -24,6 +24,21 @@ void StringField::charDelete()
 {
 	m_vectorOfLetters.pop_back();
 	m_activeLetterNumber--;
+}
+
+void StringField::setLetterState(const unsigned short& number, LetterField::State state)
+{
+	m_vectorOfLetters[number].setState(state);
+}
+
+LetterField::State StringField::getLetterState(const unsigned short& number)
+{
+	return m_vectorOfLetters[m_activeLetterNumber].getState();
+}
+
+unsigned short StringField::getSize()
+{
+	return m_activeLetterNumber;
 }
 
 float StringField::getWidth()
@@ -42,6 +57,11 @@ float StringField::getX()
 float StringField::getY()
 {
 	return m_y;
+}
+
+wchar_t StringField::getChar(const unsigned short& number)
+{
+	return m_vectorOfLetters[number].getChar();
 }
 
 std::wstring StringField::getWString()

@@ -1,5 +1,7 @@
-#include "TextField.h"
+﻿#include "TextField.h"
 #define DEFAULT_INTERLIGNE 1.3
+#define DELETE_KEY 8
+
 
 void TextField::vectorWStringAppend(std::wstring string)
 {
@@ -12,7 +14,9 @@ void TextField::vectorWStringAppend(std::wstring string)
 TextField::TextField(TextParameter textParameter) :
 	m_textParameter(textParameter),
 	m_x(0.0),
-	m_y(0.0)
+	m_y(0.0),
+	m_inputString(0u),
+	m_inputLetter(0u)
 {
 	m_vectorOfStrings.push_back(StringField(m_textParameter));
 	m_activeStringNumber = 0;
@@ -25,7 +29,7 @@ unsigned short TextField::getCharacterSize()
 
 float TextField::getHeight()
 {
-	return (m_x + ((m_activeStringNumber + 1) * m_textParameter.charSize));
+	return m_vectorOfStrings[m_activeStringNumber].getY() + m_textParameter.charSize;
 }
 
 float TextField::getWidth()
@@ -56,7 +60,7 @@ void TextField::render(sf::RenderTarget& target)
 	}
 }
 
-/* to do */void TextField::setWString(const std::wstring& wString, const unsigned short& winWidth, const unsigned short& winHight)
+void TextField::setWString(const std::wstring& wString, const unsigned short& winWidth, const unsigned short& winHight)
 {
 	while (m_activeStringNumber > 0)
 	{
@@ -107,80 +111,61 @@ void TextField::render(sf::RenderTarget& target)
 
 void TextField::setPosition(float x, float y)
 {
+	m_x = x;
+	m_y = y;
 	for (unsigned short i = 0; i <= m_activeStringNumber; i++)
 	{
 		m_vectorOfStrings[i].setPosition(x, y + i * (m_textParameter.charSize * DEFAULT_INTERLIGNE));
 	}
 }
 
-/* to do void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHight)
+void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHight)
 {
 	if (e.text.unicode == 13 || e.text.unicode == 9 || e.text.unicode == 27)
 	{
 		return; //ignore Tab, Enter, Esc buttons
 	}
-	if (e.text.unicode == 8)    // Delete key
+	if (e.text.unicode == DELETE_KEY)
 	{
-		if (m_vectorOfStrings[m_activeStringNumber].getWString().length() > 0)
+		if ((m_inputString == 0) && (m_inputLetter == 0))
 		{
-			//m_vectorOfStrings[m_activeStringNumber].handleInput(e);
-			m_vectorOfStrings[m_activeStringNumber].charAppend(static_cast<wchar_t>(e.text.unicode));
-			//m_vectorOfStrings[m_activeStringNumber].correctBackground();
-			m_wString = m_wString.substr(0, m_wString.size() - 1);
+			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::NEUTRAL);
+			return;
 		}
-		else if (m_activeStringNumber > 0)
+		if (m_inputLetter > 0)
 		{
-			m_vectorOfStrings.pop_back();
-			m_activeStringNumber--;
-			m_wString = m_wString.substr(0, m_wString.size() - 1);
-			//m_vectorOfStrings[m_activeStringNumber].handleInput(e);
-			m_vectorOfStrings[m_activeStringNumber].charAppend(static_cast<wchar_t>(e.text.unicode));
-			//m_vectorOfStrings[m_activeStringNumber].correctBackground();
+			m_inputLetter--;
+			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::NEUTRAL);
+
+		}
+		else
+		{
+			m_inputString--;
+			m_inputLetter = m_vectorOfStrings[m_inputString].getSize();
+			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::NEUTRAL);
 		}
 	}
 	else
 	{
-		if (m_vectorOfStrings[m_activeStringNumber].getGlobalBounds().width + m_charSize * 2 < winWidth)
+		if ((m_inputString == m_activeStringNumber) && (m_inputLetter > m_vectorOfStrings[m_inputString].getSize()))
+			return;//end of string, no more letters	
+
+		if (m_inputLetter > m_vectorOfStrings[m_inputString].getSize())
 		{
-			m_vectorOfStrings[m_activeStringNumber].handleInput(e);
-			m_vectorOfStrings[m_activeStringNumber].correctBackground();
-			m_wString += e.text.unicode;
+			m_inputString++;
+			m_inputLetter = 0;
+		}
+		if (static_cast<wchar_t>(e.text.unicode) == m_vectorOfStrings[m_inputString].getChar(m_inputLetter))
+		{
+			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::CORRECT);
+			m_inputLetter++;
 		}
 		else
 		{
-			std::wstring editableWString = m_vectorOfStrings[m_activeStringNumber].getString();
-			std::wstring nextLineWString = L"";
-			if (e.text.unicode == L' ')
-			{
-				m_wString += e.text.unicode;
-				m_vectorOfStrings[m_activeStringNumber].handleInput(e);
-				m_vectorOfStrings[m_activeStringNumber].correctBackground();
-				m_vectorOfStrings.push_back(TextString(m_textParameter));
-				m_activeStringNumber++;
-			}
-			else
-			{
-				for (unsigned short i = editableWString.length(); i > 0; --i)
-				{
-					if (editableWString[i] == ' ')
-					{
-						nextLineWString.append(editableWString, i + 1, editableWString.length());
-						editableWString.erase(i+1, editableWString.length());
-						break;
-					}
-				}
-				m_vectorOfStrings[m_activeStringNumber].setString(editableWString);
-				m_vectorOfStrings[m_activeStringNumber].correctBackground();
-				m_vectorOfStrings.push_back(TextString(m_textParameter));
-				m_activeStringNumber++;
-				m_vectorOfStrings[m_activeStringNumber].setString(nextLineWString);
-				m_vectorOfStrings[m_activeStringNumber].handleInput(e);
-				m_vectorOfStrings[m_activeStringNumber].correctBackground();
-				m_wString += e.text.unicode;
-			}
-			this->setPosition(m_vectorOfStrings[0].getPosition().x, m_vectorOfStrings[0].getPosition().y, m_activeStringNumber);
+			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::MISTAKE);
+			m_inputLetter++;
 		}
 	}
 }
-*/
+
  

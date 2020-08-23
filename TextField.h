@@ -7,14 +7,6 @@
 
 class TextField : public sf::RectangleShape
 {
-private:
-	TextParameter m_textParameter;
-	std::wstring m_wString;
-	std::vector<StringField> m_vectorOfStrings;
-	unsigned short m_activeStringNumber;
-	float m_x;
-	float m_y;
-	void vectorWStringAppend(std::wstring string);
 public:
 	TextField(TextParameter textParameter);
 	unsigned short getCharacterSize();
@@ -24,7 +16,18 @@ public:
 	float getY();
 	std::wstring getWString();
 	void setPosition(float x, float y);
-	void handleInput(const sf::Event &e, const unsigned short& winWidth, const unsigned short& winHigth);
+	void handleInput(const sf::Event& e, const unsigned short& winWidth, const unsigned short& winHigth);
 	void render(sf::RenderTarget& target);
 	void setWString(const std::wstring& wString, const unsigned short& winWidth, const unsigned short& winHight);
+private:
+	unsigned short m_inputString;
+	unsigned short m_inputLetter;
+	TextParameter m_textParameter;
+	std::wstring m_wString;
+	std::vector<StringField> m_vectorOfStrings;
+	unsigned short m_activeStringNumber;
+	float m_x;
+	float m_y;
+	void vectorWStringAppend(std::wstring string);
+
 };	

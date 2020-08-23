@@ -48,16 +48,16 @@ void QuickFingersCore::core()
     bool stop = false;
     std::wstring challengeMessageString = L"Done! Elapsed time is: ";
     TextField taskText(m_textParameter);
-    //TextField MessageText(font, sf::Text::Style::Regular, sf::Color(0, 100, 0), enteredText.getCharacterSize(), sf::Color::White);
-    //TextField timerText(font, sf::Text::Style::Regular, sf::Color(0, 130, 0), enteredText.getCharacterSize() / 2);
+    TextField timerText(m_textParameter);
     taskText.setWString(TextGenerator::getRandomText(), m_window->getSize().x, m_window->getSize().y);
     taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize());
-    //timerText.setPosition(timerText.getCharacterSize(), timerText.getCharacterSize());
+    timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, taskText.getY() + taskText.getHeight() + taskText.getCharacterSize());
+    timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, timerText.getY());
     while (m_window->isOpen())
     {
         m_deltaTime = m_timer.restart().asSeconds();
         m_elapsedTime += m_deltaTime;
-        //timerText.setWString(std::to_wstring(elapsedTime), m_window->getSize().x, m_window->getSize().y);
+        timerText.setWString(std::to_wstring(static_cast<int>(m_elapsedTime)), m_window->getSize().x, m_window->getSize().y);
         for (sf::Event event; m_window->pollEvent(event);)
             if (event.type == sf::Event::Closed)
             {
@@ -65,22 +65,13 @@ void QuickFingersCore::core()
             }
             else
             {
-                //if ((event.type == sf::Event::TextEntered) && !stop)
-                  //  taskText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
+                if ((event.type == sf::Event::TextEntered) && !stop)
+                    taskText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
             }
         m_window->clear();
         taskText.render(*m_window);
-        /*
-        MessageText.render(*m_window);
-        if (!stop)
-            timerText.render(*m_window);
-        if (challengeDone(taskText, enteredText) && !stop)
-        {
-            MessageString += std::to_wstring(elapsedTime);
-            MessageText.setWString(challengeMessageString, m_window->getSize().x, m_window->getSize().y);
-            MessageText.setPosition(m_window->getSize().x / 2 - challengeMessageText.getWidth() / 2, challengeMessageText.getCharacterSize());
-            stop = true;
-        }*/
+        timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, timerText.getY());
+        timerText.render(*m_window);  
         m_window->display();
     }
 }
