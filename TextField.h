@@ -8,6 +8,7 @@
 class TextField : public sf::RectangleShape
 {
 public:
+	bool checkMistakes();
 	TextField(TextParameter textParameter);
 	unsigned short getCharacterSize();
 	float getHeight();

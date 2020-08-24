@@ -69,6 +69,16 @@ std::wstring StringField::getWString()
 	return m_wstring;
 }
 
+bool StringField::checkMistakes()
+{
+	for (unsigned short letter = 0; letter <= m_activeLetterNumber; letter++)
+	{
+		if (m_vectorOfLetters[m_activeLetterNumber].getState() != LetterField::State::CORRECT)
+			return true;
+	}
+	return false;
+}
+
 void StringField::setPosition(float x, float y, unsigned short i)
 {
 	m_x = x;

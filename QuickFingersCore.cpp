@@ -17,46 +17,24 @@ QuickFingersCore::~QuickFingersCore()
     delete m_window;
 }
 
-bool QuickFingersCore::mistakeCheck(TextField& taskText, TextField& enteredText)
-{
-    if (enteredText.getWString().length() < 2)
-        return false;
-    for (unsigned short i = 0; i < enteredText.getWString().length(); i++)
-    {
-        if (taskText.getWString()[i] != enteredText.getWString()[i])
-            return true;
-    }
-    return true;
-}
-
-bool QuickFingersCore::challengeDone(TextField& taskText, TextField& enteredText)
-{
-    if (taskText.getWString().length() - 1 == enteredText.getWString().length()) // -1 for ignore '\n' char
-    {
-        for (unsigned short i = 0; i < taskText.getWString().length(); i++)
-        {
-            if (taskText.getWString()[i] != enteredText.getWString()[i])
-                return false;
-        }
-        return true;
-    }
-    return false;
-}
-
 void QuickFingersCore::core()
 {
+    std::wstring message = L"Done! Elapsed time is: ";
     bool stop = false;
-    std::wstring challengeMessageString = L"Done! Elapsed time is: ";
     TextField taskText(m_textParameter);
     TextField timerText(m_textParameter);
+    TextField messageText(m_textParameter);
     taskText.setWString(TextGenerator::getRandomText(), m_window->getSize().x, m_window->getSize().y);
     taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize());
     timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, taskText.getY() + taskText.getHeight() + taskText.getCharacterSize());
-    timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, timerText.getY());
+    messageText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, taskText.getY() + taskText.getHeight() + taskText.getCharacterSize());
     while (m_window->isOpen())
     {
-        m_deltaTime = m_timer.restart().asSeconds();
-        m_elapsedTime += m_deltaTime;
+        if (!stop)
+        {
+            m_deltaTime = m_timer.restart().asSeconds();
+            m_elapsedTime += m_deltaTime;
+        }
         timerText.setWString(std::to_wstring(static_cast<int>(m_elapsedTime)), m_window->getSize().x, m_window->getSize().y);
         for (sf::Event event; m_window->pollEvent(event);)
             if (event.type == sf::Event::Closed)
@@ -71,7 +49,19 @@ void QuickFingersCore::core()
         m_window->clear();
         taskText.render(*m_window);
         timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, timerText.getY());
-        timerText.render(*m_window);  
+        timerText.render(*m_window);
+        if (!taskText.checkMistakes())
+        {     
+            if (!stop)
+            {
+                message += std::to_wstring(m_elapsedTime);
+                message += L" seconds";
+                messageText.setWString(message, m_window->getSize().x, m_window->getSize().y);
+                messageText.setPosition(m_window->getSize().x / 2 - messageText.getWidth() / 2, timerText.getY());
+            }
+            stop = true;
+            messageText.render(*m_window);
+        }
         m_window->display();
     }
 }

@@ -11,6 +11,16 @@ void TextField::vectorWStringAppend(std::wstring string)
 	}
 }
 
+bool TextField::checkMistakes()
+{
+	for (unsigned short string = 0; string <= m_activeStringNumber; string++)
+	{
+		if (m_vectorOfStrings[string].checkMistakes())
+			return true;
+	}
+	return false;
+}
+
 TextField::TextField(TextParameter textParameter) :
 	m_textParameter(textParameter),
 	m_x(0.0),

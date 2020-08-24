@@ -21,6 +21,7 @@ public:
 	float getY();
 	wchar_t getChar(const unsigned short& number);
 	std::wstring getWString();
+	bool checkMistakes();
 private:
 	TextParameter m_textParameter;
 	std::vector<LetterField> m_vectorOfLetters;

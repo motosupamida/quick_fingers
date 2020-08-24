@@ -21,8 +21,5 @@ private:
 	float m_deltaTime;
 	float m_elapsedTime;
 	std::map<std::string, std::shared_ptr<sf::Font>> m_supportedFonts;
-	bool challengeDone(TextField& taskText, TextField& enteredText);
-	bool mistakeCheck(TextField& taskText, TextField& enteredText);
-
 };
 
