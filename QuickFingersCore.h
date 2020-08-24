@@ -15,6 +15,7 @@ public:
 	~QuickFingersCore();
 	void core();
 private:
+	bool stop;
 	TextParameter m_textParameter;
 	sf::RenderWindow* m_window;
 	sf::Clock m_timer;

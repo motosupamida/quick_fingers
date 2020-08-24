@@ -26,7 +26,8 @@ TextField::TextField(TextParameter textParameter) :
 	m_x(0.0),
 	m_y(0.0),
 	m_inputString(0u),
-	m_inputLetter(0u)
+	m_inputLetter(0u),
+	m_corrections(0u)
 {
 	m_vectorOfStrings.push_back(StringField(m_textParameter));
 	m_activeStringNumber = 0;
@@ -35,6 +36,16 @@ TextField::TextField(TextParameter textParameter) :
 unsigned short TextField::getCharacterSize()
 {
 	return m_textParameter.charSize;
+}
+
+unsigned short TextField::getCorrections()
+{
+	return m_corrections;
+}
+
+unsigned short TextField::getValidLetters()
+{
+	return m_validLetters;
 }
 
 float TextField::getHeight()
@@ -146,6 +157,7 @@ void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, 
 		{
 			m_inputLetter--;
 			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::NEUTRAL);
+			m_corrections++;
 
 		}
 		else
@@ -153,6 +165,7 @@ void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, 
 			m_inputString--;
 			m_inputLetter = m_vectorOfStrings[m_inputString].getSize();
 			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::NEUTRAL);
+			m_corrections++;
 		}
 	}
 	else
@@ -169,6 +182,7 @@ void TextField::handleInput(const sf::Event &e, const unsigned short& winWidth, 
 		{
 			m_vectorOfStrings[m_inputString].setLetterState(m_inputLetter, LetterField::State::CORRECT);
 			m_inputLetter++;
+			m_validLetters++;
 		}
 		else
 		{

@@ -11,6 +11,8 @@ public:
 	bool checkMistakes();
 	TextField(TextParameter textParameter);
 	unsigned short getCharacterSize();
+	unsigned short getCorrections();
+	unsigned short getValidLetters();
 	float getHeight();
 	float getWidth();
 	float getX();
@@ -19,8 +21,10 @@ public:
 	void setPosition(float x, float y);
 	void handleInput(const sf::Event& e, const unsigned short& winWidth, const unsigned short& winHigth);
 	void render(sf::RenderTarget& target);
-	void setWString(const std::wstring& wString, const unsigned short& winWidth, const unsigned short& winHight);
+	void setWString(const std::wstring& wString, const unsigned short& winWidth = 800, const unsigned short& winHight = 800);
 private:
+	unsigned short m_validLetters;
+	unsigned short m_corrections;
 	unsigned short m_inputString;
 	unsigned short m_inputLetter;
 	TextParameter m_textParameter;
