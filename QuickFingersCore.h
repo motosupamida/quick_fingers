@@ -7,6 +7,7 @@
 #include "TextField.h"
 #include "TextGenerator.h"
 #include "TextParameter.h"
+#include "KeyboardVisualizer.h"
 
 class QuickFingersCore
 {

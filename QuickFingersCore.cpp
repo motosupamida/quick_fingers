@@ -24,12 +24,16 @@ QuickFingersCore::~QuickFingersCore()
 void QuickFingersCore::core()
 {
     bool start = false;
+    KeyboardVisualizer m_Visualizer;
     TextField taskText(m_textParameter);
     TextField timerText(m_textParameter);
     TextField accuracyText(m_textParameter);
     TextField velocityText(m_textParameter);
     taskText.setWString(TextGenerator::getRandomText(), m_window->getSize().x, m_window->getSize().y);
     taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize());
+    velocityText.setWString(L"0 chars per minute");
+    m_Visualizer.setPosition(0,0);
+    m_Visualizer.setPosition(m_window->getSize().x / 2 -  m_Visualizer.getWidth() / 2, m_window->getSize().y - m_Visualizer.getHeight() - 50);
 
     while (m_window->isOpen())
     {
@@ -38,12 +42,10 @@ void QuickFingersCore::core()
             m_deltaTime = m_timer.restart().asSeconds();
             m_elapsedTime += m_deltaTime;
             unsigned short letters = taskText.getValidLetters();
-            if (!letters)
-                velocityText.setWString(L"0 CHAR PER MINUTE");
-            else
+            if (letters)
                 velocityText.setWString(std::to_wstring(static_cast<int>(taskText.getValidLetters() / (m_elapsedTime / 60))) += L" chars per minute");
-            velocityText.setPosition(m_window->getSize().x / 2 - velocityText.getWidth() / 2, taskText.getHeight() + velocityText.getCharacterSize());
         }
+        velocityText.setPosition(m_window->getSize().x / 2 - velocityText.getWidth() / 2, taskText.getHeight() + velocityText.getCharacterSize());
         for (sf::Event event; m_window->pollEvent(event);)
             if (event.type == sf::Event::Closed)
             {
@@ -51,6 +53,15 @@ void QuickFingersCore::core()
             }
             else
             {
+                if (event.type == sf::Event::KeyPressed)
+                {
+                    m_Visualizer.setState(KeyboardVisualizer::State::ENABLE, event.key.code);
+                    std::cout << std::to_string(event.key.code) << std::endl;
+                }
+                if (event.type == sf::Event::KeyReleased)
+                {
+                    m_Visualizer.setState(KeyboardVisualizer::State::DISABLE, event.key.code);
+                }
                 if ((event.type == sf::Event::TextEntered) && !stop)
                 {
                     taskText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
@@ -66,6 +77,7 @@ void QuickFingersCore::core()
         timerText.render(*m_window);
         accuracyText.render(*m_window);
         velocityText.render(*m_window);
+        m_Visualizer.render(*m_window);
         if (!taskText.checkMistakes())
         {     
             if (!stop)

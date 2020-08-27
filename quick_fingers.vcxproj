@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="KeyboardVisualizer.cpp" />
     <ClCompile Include="LetterField.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QuickFingersCore.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="StringField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="KeyboardVisualizer.h" />
     <ClInclude Include="TextParameter.h" />
     <ClInclude Include="LetterField.h" />
     <ClInclude Include="QuickFingersCore.h" />
