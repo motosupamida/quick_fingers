@@ -1,19 +1,22 @@
-﻿#include <sstream>
-#include <iomanip> 
+﻿#include "QuickFingersCore.h"
+#include "TaskCore.h"
 
-#include "QuickFingersCore.h"
+#define WINDOW_HEIGHT 800
+#define WINDOW_WIDTH 1200
+#define ESC_KEYCODE 36
+#define UP_KEYCODE 73
+#define DOWN_KEYCODE 74
+#define ENTER_KEYCODE 58
+#define INVISIBLE_COLOR sf::Color(0, 0, 0, 0)
+#define DEFAULT_INDENT 100
 
-QuickFingersCore::QuickFingersCore(unsigned short windowWidth, unsigned short windowHight) :
-    m_window{ new sf::RenderWindow({ windowWidth, windowHight }, "QuickFingers", sf::Style::Close) },
-    m_deltaTime{ 0.f },
-    m_elapsedTime{ 0.f },
-    stop(0)
+QuickFingersCore::QuickFingersCore() :
+    m_window{ new sf::RenderWindow({WINDOW_WIDTH, WINDOW_HEIGHT}, "QuickFingers", sf::Style::Close) }
 {
     m_window->setFramerateLimit(120);
     m_supportedFonts["CENTURY_GOTHIC"] = std::make_shared<sf::Font>();
     m_supportedFonts["CENTURY_GOTHIC"]->loadFromFile("CenturyGothic.ttf");
     m_textParameter.font = m_supportedFonts["CENTURY_GOTHIC"];
-    m_textParameter.style = sf::Text::Style::Regular;
 }
 
 QuickFingersCore::~QuickFingersCore()
@@ -21,80 +24,196 @@ QuickFingersCore::~QuickFingersCore()
     delete m_window;
 }
 
-void QuickFingersCore::core()
+void QuickFingersCore::startScreen()
 {
-    bool start = false;
-    KeyboardVisualizer m_Visualizer;
-    TextField taskText(m_textParameter);
-    TextField timerText(m_textParameter);
-    TextField accuracyText(m_textParameter);
-    TextField velocityText(m_textParameter);
-    taskText.setWString(TextGenerator::getRandomText(), m_window->getSize().x, m_window->getSize().y);
-    taskText.setPosition(taskText.getCharacterSize(), taskText.getCharacterSize());
-    velocityText.setWString(L"0 chars per minute");
-    m_Visualizer.setPosition(0,0);
-    m_Visualizer.setPosition(m_window->getSize().x / 2 -  m_Visualizer.getWidth() / 2, m_window->getSize().y - m_Visualizer.getHeight() - 50);
+    while (m_window->isOpen())
+    {
+        m_window->clear();
+
+        m_window->display();
+    }
+}
+
+void QuickFingersCore::countdownScreen(const unsigned short time, const TextGenerator::Language language)
+{
+    while (m_window->isOpen())
+    {
+        m_window->clear();
+
+        m_window->display();
+    }
+}
+
+TextGenerator::GenerationType QuickFingersCore::selectGenerationType()
+{
+    TextParameter requestTextParameter = m_textParameter;
+    requestTextParameter.neutralColor = INVISIBLE_COLOR;
+    TextField requestMessage(requestTextParameter);
+    requestMessage.setWString(L"Please select generation type");
+    std::vector<TextField> typesMessage;
+    std::vector<TextGenerator::GenerationType> types;
+    unsigned short selectedType(0);
+
+    typesMessage.push_back(m_textParameter);
+    typesMessage[0].setWString(L"Text from file");
+    types.push_back(TextGenerator::GenerationType::FROM_FILE);
+
+    typesMessage.push_back(m_textParameter);
+    typesMessage[1].setWString(L"Text from wiki");
+    types.push_back(TextGenerator::GenerationType::FROM_WIKI);
+
+    typesMessage.push_back(m_textParameter);
+    typesMessage[2].setWString(L"Random text");
+    types.push_back(TextGenerator::GenerationType::RANDOM);
+
+    typesMessage.push_back(m_textParameter);
+    typesMessage[3].setWString(L"Test text (pangram)");
+    types.push_back(TextGenerator::GenerationType::TEST);
+
+    requestMessage.setPosition(m_window->getSize().x / 2 - requestMessage.getWidth() / 2, DEFAULT_INDENT);
+    for (unsigned short i = 0; i < types.size(); i++)
+        typesMessage[i].setPosition(m_window->getSize().x / 2 - typesMessage[i].getWidth() / 2, requestMessage.getY() + requestMessage.getHeight() + DEFAULT_INDENT * i);
+
+    typesMessage[0].setState(LetterField::State::CORRECT);
 
     while (m_window->isOpen())
     {
-        if (!stop && start)
-        {
-            m_deltaTime = m_timer.restart().asSeconds();
-            m_elapsedTime += m_deltaTime;
-            unsigned short letters = taskText.getValidLetters();
-            if (letters)
-                velocityText.setWString(std::to_wstring(static_cast<int>(taskText.getValidLetters() / (m_elapsedTime / 60))) += L" chars per minute");
-        }
-        velocityText.setPosition(m_window->getSize().x / 2 - velocityText.getWidth() / 2, taskText.getHeight() + velocityText.getCharacterSize());
+        m_window->clear();
         for (sf::Event event; m_window->pollEvent(event);)
+        {
             if (event.type == sf::Event::Closed)
             {
                 m_window->close();
             }
             else
             {
-                if (event.type == sf::Event::KeyPressed)
-                {
-                    m_Visualizer.setState(KeyboardVisualizer::State::ENABLE, event.key.code);
-                    std::cout << std::to_string(event.key.code) << std::endl;
-                }
                 if (event.type == sf::Event::KeyReleased)
                 {
-                    m_Visualizer.setState(KeyboardVisualizer::State::DISABLE, event.key.code);
-                }
-                if ((event.type == sf::Event::TextEntered) && !stop)
-                {
-                    taskText.handleInput(event, m_window->getSize().x, m_window->getSize().y);
-                    if (!start)
+                    switch (event.key.code)
                     {
-                        start = true;
-                        m_deltaTime = m_timer.restart().asSeconds();
+                    case ESC_KEYCODE:
+                        m_window->close();
+                        break;
+                    case UP_KEYCODE:
+                        if (selectedType > 0)
+                        {
+                            typesMessage[selectedType].setState(LetterField::State::NEUTRAL);
+                            selectedType--;
+                            typesMessage[selectedType].setState(LetterField::State::CORRECT);
+                        }
+                        break;
+                    case DOWN_KEYCODE:
+                        if (selectedType < types.size() - 1)
+                        {
+                            typesMessage[selectedType].setState(LetterField::State::NEUTRAL);
+                            selectedType++;
+                            typesMessage[selectedType].setState(LetterField::State::CORRECT);
+                        }
+                        break;
+                    case ENTER_KEYCODE:
+                        return types[selectedType];
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
+        }
+        
+        requestMessage.render(*m_window);
+        for (unsigned short i = 0; i < types.size(); i++)
+            typesMessage[i].render(*m_window);
+        m_window->display();
+    }
+}
+
+TextGenerator::Language QuickFingersCore::selectLanguage()
+{
+    TextParameter requestTextParameter = m_textParameter;
+    requestTextParameter.neutralColor = INVISIBLE_COLOR;
+    TextField requestMessage(requestTextParameter);
+    requestMessage.setWString(L"Please select language");
+    std::vector<TextField> languagesMessage;
+    std::vector<TextGenerator::Language> languages;
+    unsigned short selectedLanguage(0);
+
+    languagesMessage.push_back(m_textParameter);
+    languagesMessage[0].setWString(L"English");
+    languages.push_back(TextGenerator::Language::ENGLISH);
+
+    languagesMessage.push_back(m_textParameter);
+    languagesMessage[1].setWString(L"Russian");
+    languages.push_back(TextGenerator::Language::RUSSIAN);
+
+    requestMessage.setPosition(m_window->getSize().x / 2 - requestMessage.getWidth() / 2, DEFAULT_INDENT);
+    for (unsigned short i = 0; i < languages.size(); i++)
+        languagesMessage[i].setPosition(m_window->getSize().x / 2 - languagesMessage[i].getWidth() / 2, requestMessage.getY() + requestMessage.getHeight() + DEFAULT_INDENT * i);
+    
+    languagesMessage[0].setState(LetterField::State::CORRECT);
+
+    while (m_window->isOpen())
+    {
         m_window->clear();
-        taskText.render(*m_window);
-        timerText.render(*m_window);
-        accuracyText.render(*m_window);
-        velocityText.render(*m_window);
-        m_Visualizer.render(*m_window);
-        if (!taskText.checkMistakes())
-        {     
-            if (!stop)
+        for (sf::Event event; m_window->pollEvent(event);)
+        {
+            if (event.type == sf::Event::Closed)
             {
-                std::wstringstream timerStream;
-                timerStream.precision(2);
-                timerStream << L"Elapsed time: " << std::fixed << m_elapsedTime << L" seconds";
-                timerText.setWString(timerStream.str());
-                timerText.setPosition(m_window->getSize().x / 2 - timerText.getWidth() / 2, velocityText.getHeight() + timerText.getCharacterSize());
-                std::wstringstream accuracyStream;
-                accuracyStream << std::setprecision(3);
-                accuracyStream << L"Accuracy: " << 100.f - (static_cast<float>(taskText.getCorrections()) / (taskText.getWString().length()) * 100) << L"%";
-                accuracyText.setWString(accuracyStream.str());
-                accuracyText.setPosition(m_window->getSize().x / 2 - accuracyText.getWidth() / 2, timerText.getHeight() + accuracyText.getCharacterSize());
-                stop = true;
+                m_window->close();
+            }
+            else
+            {
+                if (event.type == sf::Event::KeyReleased)
+                {
+                    switch (event.key.code)
+                    {
+                    case ESC_KEYCODE:
+                        m_window->close();
+                        break;
+                    case UP_KEYCODE:
+                        if (selectedLanguage > 0)
+                        {
+                            languagesMessage[selectedLanguage].setState(LetterField::State::NEUTRAL);
+                            selectedLanguage--;
+                            languagesMessage[selectedLanguage].setState(LetterField::State::CORRECT);
+                        }
+                        break;
+                    case DOWN_KEYCODE:
+                        if (selectedLanguage < languages.size() - 1)
+                        {
+                            languagesMessage[selectedLanguage].setState(LetterField::State::NEUTRAL);
+                            selectedLanguage++;
+                            languagesMessage[selectedLanguage].setState(LetterField::State::CORRECT);
+                        }
+                        break;
+                    case ENTER_KEYCODE:
+                        return languages[selectedLanguage];
+                        break;
+                    default:
+                        break;
+                    }
+                }
             }
         }
+
+        requestMessage.render(*m_window);
+        for (unsigned short i = 0; i < languages.size(); i++)
+            languagesMessage[i].render(*m_window);
         m_window->display();
+    }
+}
+
+void QuickFingersCore::start()
+{
+    TextGenerator::GenerationType generationType = TextGenerator::GenerationType::TEST;
+    TextGenerator::Language language = TextGenerator::Language::ENGLISH;
+    //startScreen();
+    while (m_window->isOpen())
+    {
+        language = selectLanguage();
+        generationType = selectGenerationType();
+        //countdownScreen(3, language);
+        TaskCore* task;
+        task = new TaskCore(m_window, m_textParameter, language, generationType);
+        delete task;
     }
 }

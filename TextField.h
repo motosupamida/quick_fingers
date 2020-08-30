@@ -22,6 +22,7 @@ public:
 	void handleInput(const sf::Event& e, const unsigned short& winWidth, const unsigned short& winHigth);
 	void render(sf::RenderTarget& target);
 	void setWString(const std::wstring& wString, const unsigned short& winWidth = 800, const unsigned short& winHight = 800);
+	void setState(LetterField::State state);
 private:
 	unsigned short m_validLetters;
 	unsigned short m_corrections;

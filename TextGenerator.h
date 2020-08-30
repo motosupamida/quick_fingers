@@ -7,9 +7,23 @@
 class TextGenerator
 {
 public:
-	static std::wstring getRandomText(const unsigned short = 0, const unsigned short stringSize = 10u, const unsigned short spaceRate = 0u);
-	static std::wstring getTextFromFile();
+	enum class Language
+	{
+		ENGLISH,
+		RUSSIAN
+	};
+	enum class GenerationType
+	{
+		RANDOM,
+		FROM_FILE,
+		FROM_WIKI,
+		TEST
+	};
+	static std::wstring generate(Language language, GenerationType generationType);
 private:
-
+	static std::wstring getRandomText(Language language);
+	static std::wstring getTextFromFile(Language language);
+	static std::wstring getTextFromWiki(Language language);
+	static std::wstring getTestText(Language language);
 };
 

@@ -130,6 +130,15 @@ void TextField::setWString(const std::wstring& wString, const unsigned short& wi
 	}
 }
 
+void TextField::setState(LetterField::State state)
+{
+	for (unsigned short string = 0; string <= m_activeStringNumber; string++)
+	{
+		for (unsigned short letter = 0; letter < m_vectorOfStrings[string].getWString().size(); letter++)
+			m_vectorOfStrings[string].setLetterState(letter, state);
+	}
+}
+
 void TextField::setPosition(float x, float y)
 {
 	m_x = x;

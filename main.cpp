@@ -2,8 +2,8 @@
 
 int main()
 {
-    QuickFingersCore *session = new QuickFingersCore(1200, 800);
-    session->core();
+    QuickFingersCore *session = new QuickFingersCore();
+    session->start();
     delete session;
     return 0;
 }

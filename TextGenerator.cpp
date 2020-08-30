@@ -1,30 +1,87 @@
 ﻿#include "TextGenerator.h"
 
-std::wstring TextGenerator::getRandomText(const unsigned short language, const unsigned short stringSize, const unsigned short spaceRate)
+std::wstring TextGenerator::generate(Language language, GenerationType generationType)
 {
-    /*
-    wchar_t alphabet[5][33] =
-    { {L'a', L'b', L'c', L'd', L'e', L'f', L'g', L'h', L'i', L'j', L'k', L'l', L'm', L'n', L'o', L'p', L'q', L'r', L's', L't', L'u', L'v', L'w', L'x', L'y', L'z' },
-    {L'A', },
-    {},
-    {} };
-    std::wstring result = L"";
-    srand(time(NULL));
-    for (unsigned short i = 0; i < stringSize; i++)
+    switch (generationType)
     {
-        result += (160 + rand() % 85);
-        if (spaceRate > 0)
-            if ((spaceRate == (rand() % spaceRate)) && (i < stringSize + 1))
-                result += L" ";
+    case GenerationType::FROM_FILE :
+        return getTextFromFile(language);
+        break;
+    case GenerationType::FROM_WIKI :
+        return getTextFromWiki(language);
+        break;
+    case GenerationType::RANDOM :
+        return getRandomText(language);
+        break;
+    case GenerationType::TEST:
+        return getTestText(language);
+        break;
+    default:
+        return L"TYPE OF GENERATION ERROR";
+        break;
     }
-    return result;*/
-    //return L"ААА";
-    return L"Я родился в Москве в семидесятом на краю города моча рано ударила в голову в четыре активно ругался матом, в детском саду девочки впервые показали мне пизду потом школа, вонючая форма, драки, клей так я становился сильней";
 }
 
-std::wstring TextGenerator::getTextFromFile()
+std::wstring TextGenerator::getTestText(Language language)
 {
-    //std::wstring result = L"";
-    //return result;
-    return L"Большой тестовый текст";
+    switch (language)
+    {
+    case TextGenerator::Language::ENGLISH:
+        return L"The five boxing wizards jump quickly.";
+        break;
+    case TextGenerator::Language::RUSSIAN:
+        return L"Съешь ещё этих мягких французских булок, да выпей же чаю.";
+        break;
+    default:
+        return L"INVALID LANGUAGE TO TEST TEXT GENERATION!";
+        break;
+    }
+}
+
+std::wstring TextGenerator::getRandomText(Language language)
+{
+    switch (language)
+    {
+    case TextGenerator::Language::ENGLISH:
+        return L"Random text generation in this language is still in development.";
+        break;
+    case TextGenerator::Language::RUSSIAN:
+        return L"Рандомная генерация текста на этом языке еще в разработке.";
+        break;
+    default:
+        return L"INVALID LANGUAGE TO RANDOM TEXT GENERATION!";
+        break;
+    }
+}
+
+std::wstring TextGenerator::getTextFromFile(Language language)
+{
+    switch (language)
+    {
+    case TextGenerator::Language::ENGLISH:
+        return L"Reading from file in this language is still in development.";
+        break;
+    case TextGenerator::Language::RUSSIAN:
+        return L"Чтение из файла на этом языке еще в разработке.";
+        break;
+    default:
+        return L"INVALID LANGUAGE TO TEXT FROM FILE GENERATION!";
+        break;
+    }
+}
+
+std::wstring TextGenerator::getTextFromWiki(Language language)
+{
+    switch (language)
+    {
+    case TextGenerator::Language::ENGLISH:
+        return L"Wiki parser in this language is still in development.";
+        break;
+    case TextGenerator::Language::RUSSIAN:
+        return L"Вики парсер на этом языке еще в разработке.";
+        break;
+    default:
+        return L"INVALID LANGUAGE TO TEXT FROM WIKI GENERATION!";
+        break;
+    }
 }

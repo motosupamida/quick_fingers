@@ -3,6 +3,8 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <sstream>
+#include <iomanip> 
 #include <sfml/graphics.hpp>
 #include "TextField.h"
 #include "TextGenerator.h"
@@ -12,16 +14,16 @@
 class QuickFingersCore
 {
 public:
-	QuickFingersCore(unsigned short windowWidth = 800, unsigned short windowHight = 800);
+	QuickFingersCore();
 	~QuickFingersCore();
-	void core();
+	void start();
 private:
-	bool stop;
+	void startScreen();
+	void countdownScreen(const unsigned short time, const TextGenerator::Language language);
+	TextGenerator::GenerationType selectGenerationType();
+	TextGenerator::Language selectLanguage();
 	TextParameter m_textParameter;
 	sf::RenderWindow* m_window;
-	sf::Clock m_timer;
-	float m_deltaTime;
-	float m_elapsedTime;
 	std::map<std::string, std::shared_ptr<sf::Font>> m_supportedFonts;
 };
 
