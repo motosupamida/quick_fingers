@@ -56,18 +56,29 @@ std::wstring TextGenerator::getRandomText(Language language)
 
 std::wstring TextGenerator::getTextFromFile(Language language)
 {
+    std::wstring result(L"");
+    std::ifstream* inputFileStream;
     switch (language)
     {
     case TextGenerator::Language::ENGLISH:
+        inputFileStream = new std::ifstream("english_strings.txt");
         return L"Reading from file in this language is still in development.";
         break;
     case TextGenerator::Language::RUSSIAN:
+        inputFileStream = new std::ifstream("russian_strings.txt");
         return L"Чтение из файла на этом языке еще в разработке.";
         break;
     default:
         return L"INVALID LANGUAGE TO TEXT FROM FILE GENERATION!";
         break;
     }
+    if (!inputFileStream)
+    {
+        return L"FILE OPEN ERROR!";
+    }
+    //todo 
+    delete inputFileStream;
+    return result;
 }
 
 std::wstring TextGenerator::getTextFromWiki(Language language)

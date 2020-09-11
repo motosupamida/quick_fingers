@@ -36,10 +36,40 @@ void QuickFingersCore::startScreen()
 
 void QuickFingersCore::countdownScreen(const unsigned short time, const TextGenerator::Language language)
 {
-    while (m_window->isOpen())
+    TextField languageMessage(m_textParameter);  
+    switch (language)
     {
+    case TextGenerator::Language::ENGLISH :
+        languageMessage.setWString(L"Enable ENG keyboard layout.");
+        break;
+    case TextGenerator::Language::RUSSIAN :
+        languageMessage.setWString(L"Enable RUS keyboard layout.");
+        break;
+    default:
+        languageMessage.setWString(L"Unknow language.");
+        break;
+    }
+    languageMessage.setPosition(m_window->getSize().x / 2 - languageMessage.getWidth() / 2, DEFAULT_INDENT + languageMessage.getCharacterSize());
+    TextField timerMessage(m_textParameter);
+    timerMessage.setWString(L"Start in x");
+    timerMessage.setPosition(m_window->getSize().x / 2 - timerMessage.getWidth() / 2, m_window->getSize().y / 2);
+    sf::Clock m_timer;
+    float m_deltaTime(0);
+    float m_elapsedTime(0);
+    m_timer.restart().asSeconds();
+    while (m_window->isOpen())
+    {  
+        if (m_elapsedTime >= time)
+            return;
+        m_deltaTime = m_timer.restart().asSeconds();
+        m_elapsedTime += m_deltaTime;
+        std::wstringstream timerStream;
+        timerStream << L"Start in " << time - static_cast<int>(m_elapsedTime);
+        timerMessage.setWString(timerStream.str());
+        timerMessage.setPosition(m_window->getSize().x / 2 - timerMessage.getWidth() / 2, m_window->getSize().y / 2);
         m_window->clear();
-
+        languageMessage.render(*m_window);
+        timerMessage.render(*m_window);
         m_window->display();
     }
 }
@@ -204,14 +234,14 @@ TextGenerator::Language QuickFingersCore::selectLanguage()
 
 void QuickFingersCore::start()
 {
-    TextGenerator::GenerationType generationType = TextGenerator::GenerationType::TEST;
-    TextGenerator::Language language = TextGenerator::Language::ENGLISH;
+    TextGenerator::GenerationType generationType;
+    TextGenerator::Language language;
     //startScreen();
     while (m_window->isOpen())
     {
         language = selectLanguage();
         generationType = selectGenerationType();
-        //countdownScreen(3, language);
+        countdownScreen(3, language);
         TaskCore* task;
         task = new TaskCore(m_window, m_textParameter, language, generationType);
         delete task;

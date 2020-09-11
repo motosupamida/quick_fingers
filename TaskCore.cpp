@@ -19,6 +19,7 @@ TaskCore::TaskCore(
 	m_window(window) //window for render
 
 {
+    for (sf::Event event; m_window->pollEvent(event);) {} //clearing the event stream of the window
     m_taskText.setWString(TextGenerator::generate(language, generationType), m_window->getSize().x, m_window->getSize().y);
     m_taskText.setPosition(m_taskText.getCharacterSize(), m_taskText.getCharacterSize());
     m_velocityText.setWString(L"0 chars per minute");
