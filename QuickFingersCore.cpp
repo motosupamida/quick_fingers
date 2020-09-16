@@ -59,6 +59,13 @@ void QuickFingersCore::countdownScreen(const unsigned short time, const TextGene
     m_timer.restart().asSeconds();
     while (m_window->isOpen())
     {  
+        for (sf::Event event; m_window->pollEvent(event);)
+        {
+            if (event.type == sf::Event::Closed)
+            {
+                m_window->close();
+            }
+        }
         if (m_elapsedTime >= time)
             return;
         m_deltaTime = m_timer.restart().asSeconds();
